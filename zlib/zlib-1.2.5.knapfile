@@ -1,0 +1,38 @@
+recipe "zlib", "1.2.5" do
+  use :autotools
+
+  fetch "http://distfiles.openknapsack.org/#{name}/#{name}-#{version}.tar.bz2",
+        :md5 => "be1e89810e66150f5b0327984d8625a0"
+
+  action :configure do
+    if platform.mingw?
+      # win32/Makefile.gcc needs to be adjusted
+      options.makefile = "win32/Makefile.gcc"
+      work_makefile = work_path(options.makefile)
+      mk = File.read work_makefile
+      File.open work_makefile, "wb" do |f|
+        f.puts "BINARY_PATH  = #{install_path('bin')}"
+        f.puts "INCLUDE_PATH = #{install_path('include')}"
+        f.puts "LIBRARY_PATH = #{install_path('lib')}"
+
+        # TODO: change PREFIX if cross-compiling
+        unless platform.native?
+          mg.sub!(/^PREFIX\s*=\s*$/, "PREFIX = #{platform.host}-")
+        end
+
+        # enable shared object
+        mk.sub!(/^SHARED_MODE\s*=\d*$/, "SHARED_MODE = 1")
+
+        # ensure IMPLIB is libz.dll.a
+        # (so linking with -lz will prefer shared instead of static)
+        mk.sub!(/^IMPLIB\s*=.*$/, "IMPLIB = libz.dll.a")
+
+        # write the original Makefile content
+        f.puts mk
+      end
+    else
+      # run will chdir into work_path prior executing the command
+      run "sh configure --prefix=#{install_path}"
+    end
+  end
+end

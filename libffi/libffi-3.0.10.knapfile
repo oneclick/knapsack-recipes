@@ -1,0 +1,7 @@
+recipe "libffi", "3.0.10" do
+  use :autotools
+  use :patch
+
+  fetch "http://distfiles.openknapsack.org/#{name}/#{name}-#{version}.tar.gz",
+    :md5 => "79390673f5d07a8fb342bc09b5055b6f"
+end
