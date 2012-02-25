@@ -20,8 +20,8 @@ recipe "libcurl", "7.24.0" do
   end
 
   action :install do
-    # we only need libs, headers and docs
-    %w(lib include docs).each do |dir|
+    # we only need libs, headers and libcurl docs
+    %w(lib include docs/libcurl).each do |dir|
       run "make -f #{options.makefile} -C #{dir} install"
     end
 
