@@ -1,11 +1,10 @@
-From 88183980ad393f4dffa446e960a739e41965abc3 Mon Sep 17 00:00:00 2001
+From 410a0a616062cd0b49c42e1636e9321657ee2078 Mon Sep 17 00:00:00 2001
 From: Hiroshi Shirosaki <h.shirosaki@gmail.com>
 Date: Sat, 30 Jun 2012 21:08:37 +0900
 Subject: [PATCH] Fix gdbm reorganize failure
 
-Reorganize of gdbm doesn't work because file rename is not allowed
-with opened files on Windows. Adding close/open file process fixes the
-issue.
+Reorganize of gdbm doesn't work because file rename is not allowed with
+opened files on Windows. Adding close/open file process fixes the issue.
 
 This patch is based on Usa's work which passes
 TestGDBM#test_s_open_error.
@@ -16,14 +15,14 @@ This enables both static and dll libraries using libtool.
 GnuWin32 version is hard to build. So far I cannot build this.
 http://gnuwin32.sourceforge.net/packages/gdbm.htm
 ---
- Makefile.in |  28 +++++-----
+ Makefile.in |  34 ++++++------
  gdbmopen.c  |   9 ++--
  gdbmreorg.c | 170 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
- systems.h   |  23 ++++++--
- 4 files changed, 208 insertions(+), 22 deletions(-)
+ systems.h   |  24 +++++++--
+ 4 files changed, 212 insertions(+), 25 deletions(-)
 
 diff --git a/Makefile.in b/Makefile.in
-index fec70bb..ba1c895 100644
+index fec70bb..4169b86 100644
 --- a/Makefile.in
 +++ b/Makefile.in
 @@ -5,7 +5,7 @@ top_builddir = .
@@ -35,6 +34,15 @@ index fec70bb..ba1c895 100644
  
  # GDBM 1.8.3 builds shared libraries version 3.0
  SHLIB_VER = 3 0 0
+@@ -53,7 +53,7 @@ manext = 3
+ 	$(CC) -c $(CPPFLAGS) $(DEFS) -I. -I$(srcdir) $(CFLAGS) $<
+ 
+ .c.lo:
+-	$(LIBTOOL) --mode=compile $(CC) -c $(CPPFLAGS) $(DEFS) -I. -I$(srcdir) $(CFLAGS) $<
++	$(LIBTOOL) --mode=compile --tag=CC $(CC) -c $(CPPFLAGS) $(DEFS) -I. -I$(srcdir) $(CFLAGS) $<
+ 
+ SHELL = /bin/sh
+ 
 @@ -130,22 +130,22 @@ install: libgdbm.la gdbm.h gdbm.info
  	$(srcdir)/mkinstalldirs $(INSTALL_ROOT)$(libdir) \
  		$(INSTALL_ROOT)$(includedir) $(INSTALL_ROOT)$(man3dir) \
@@ -65,17 +73,20 @@ index fec70bb..ba1c895 100644
  		$(INSTALL_ROOT)$(includedir)/ndbm.h
  
  #libgdbm.a: $(OBJS) gdbm.h
-@@ -156,12 +156,12 @@ install-compat:
+@@ -155,13 +155,13 @@ install-compat:
+ 
  libgdbm.la: $(LOBJS) gdbm.h
  	rm -f libgdbm.la
- 	$(LIBTOOL) --mode=link $(CC) -o libgdbm.la -rpath $(libdir) \
+-	$(LIBTOOL) --mode=link $(CC) -o libgdbm.la -rpath $(libdir) \
 -		-version-info $(SHLIB_VER) $(LOBJS)
++	$(LIBTOOL) --mode=link --tag=CC $(CC) -o libgdbm.la -rpath $(libdir) \
 +		-version-info $(SHLIB_VER) $(LOBJS) -no-undefined
  
  libgdbm_compat.la: $(C_LOBJS) gdbm.h
  	rm -f libgdbm_compat.la
- 	$(LIBTOOL) --mode=link $(CC) -o libgdbm_compat.la -rpath $(libdir) \
+-	$(LIBTOOL) --mode=link $(CC) -o libgdbm_compat.la -rpath $(libdir) \
 -		-version-info $(SHLIB_VER) $(C_LOBJS)
++	$(LIBTOOL) --mode=link --tag=CC $(CC) -o libgdbm_compat.la -rpath $(libdir) \
 +		-version-info $(SHLIB_VER) $(C_LOBJS) libgdbm.la -no-undefined
  
  gdbm.h:	gdbm.proto gdbmerrno.h gdbm.proto2
@@ -85,11 +96,11 @@ index fec70bb..ba1c895 100644
  
  testgdbm: testgdbm.o libgdbm.la @LIBOBJS@
 -	$(LIBTOOL) $(CC) $(LDFLAGS) -o testgdbm testgdbm.o libgdbm.la @LIBOBJS@
-+	$(LIBTOOL) --mode=link $(CC) $(LDFLAGS) -o testgdbm testgdbm.o libgdbm.la @LIBOBJS@
++	$(LIBTOOL) --mode=link --tag=CC $(CC) $(LDFLAGS) -o testgdbm testgdbm.o libgdbm.la @LIBOBJS@
  
  testdbm: testdbm.o libgdbm.la libgdbm_compat.la
 -	$(LIBTOOL) $(CC) $(LDFLAGS) -o testdbm testdbm.o libgdbm.la libgdbm_compat.la
-+	$(LIBTOOL) --mode=link $(CC) $(LDFLAGS) -o testdbm testdbm.o libgdbm.la libgdbm_compat.la
++	$(LIBTOOL) --mode=link --tag=CC $(CC) $(LDFLAGS) -o testdbm testdbm.o libgdbm.la libgdbm_compat.la
  
  tdbm: testdbm.o
  	$(CC) $(LDFLAGS) -o tdbm testdbm.o $(LIBS)
@@ -98,7 +109,7 @@ index fec70bb..ba1c895 100644
  
  testndbm: testndbm.o libgdbm.la libgdbm_compat.la
 -	$(LIBTOOL) $(CC) $(LDFLAGS) -o testndbm testndbm.o libgdbm.la libgdbm_compat.la
-+	$(LIBTOOL) --mode=link $(CC) $(LDFLAGS) -o testndbm testndbm.o libgdbm.la libgdbm_compat.la
++	$(LIBTOOL) --mode=link --tag=CC $(CC) $(LDFLAGS) -o testndbm testndbm.o libgdbm.la libgdbm_compat.la
  
  tndbm.o: testndbm.c
  	cp $(srcdir)/testndbm.c ./tndbm.c
@@ -107,7 +118,7 @@ index fec70bb..ba1c895 100644
  
  conv2gdbm: conv2gdbm.o libgdbm.la @LIBOBJS@
 -	$(LIBTOOL) $(CC) $(LDFLAGS) -o conv2gdbm conv2gdbm.o $(LIBS) libgdbm.la @LIBOBJS@
-+	$(LIBTOOL) --mode=link $(CC) $(LDFLAGS) -o conv2gdbm conv2gdbm.o $(LIBS) libgdbm.la @LIBOBJS@
++	$(LIBTOOL) --mode=link --tag=CC $(CC) $(LDFLAGS) -o conv2gdbm conv2gdbm.o $(LIBS) libgdbm.la @LIBOBJS@
  
  lintgdbm: 
  	lint $(DEFS) $(LFLAGS) $(DBM_CF) $(NDBM_CF) $(GDBM_CF) testgdbm.c
@@ -366,21 +377,22 @@ index 16e8a02..6321bb0 100644
    free (dbf->dir);
  
 diff --git a/systems.h b/systems.h
-index 89bee2f..e9757a9 100644
+index 89bee2f..adadcf9 100644
 --- a/systems.h
 +++ b/systems.h
-@@ -50,6 +50,10 @@
+@@ -50,6 +50,11 @@
  #if HAVE_FCNTL_H
  #include <fcntl.h>
  #endif
 +#ifdef _WIN32
++#undef _WIN32_WINNT
 +#define _WIN32_WINNT 0x0500
 +#include <windows.h>
 +#endif
  
  #ifndef SEEK_SET
  #define SEEK_SET        0
-@@ -61,7 +65,10 @@
+@@ -61,7 +66,10 @@
  
  /* Do we have flock?  (BSD...) */
  
@@ -392,7 +404,7 @@ index 89bee2f..e9757a9 100644
  
  #ifndef LOCK_SH
  #define LOCK_SH	1
-@@ -123,7 +130,9 @@
+@@ -123,7 +131,9 @@
  #endif
  
  /* Do we have fsync? */
@@ -403,7 +415,7 @@ index 89bee2f..e9757a9 100644
  #define fsync(f) {sync(); sync();}
  #endif
  
-@@ -136,13 +145,21 @@
+@@ -136,13 +146,21 @@
  #define STATBLKSIZE 1024
  #endif
  
