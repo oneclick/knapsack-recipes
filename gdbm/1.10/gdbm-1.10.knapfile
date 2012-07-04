@@ -1,0 +1,13 @@
+recipe "gdbm", "1.10" do
+  use :autotools
+  use :patch
+
+  fetch "http://ftpmirror.gnu.org/#{name}/gdbm-#{version}.tar.gz",
+    :md5 => "88770493c2559dc80b561293e39d3570"
+
+  before :configure do
+    options.configure_args << "--enable-static"
+    options.configure_args << "--enable-shared"
+    options.configure_args << "--enable-libgdbm-compat"
+  end
+end
