@@ -1,0 +1,44 @@
+recipe "pdcurses", "3.4" do
+  sequence :configure, :compile, :install
+  use :patch
+
+  fetch "http://downloads.sourceforge.net/#{name}/PDCurses-#{version}.tar.gz",
+    :md5 => "4e04e4412d1b1392a7f9a489b95b331a"
+
+  action :configure do
+    # no-op to satisfy patch task
+    options.makefile = "mingwin32.mak"
+  end
+
+  action :compile do
+    # build static library first to avoid declspec(__dllexport) symbols
+    run "make -C win32 -f #{options.makefile} WIDE=Y UTF8=Y all"
+
+    # now build the DLL using existing compiled files
+    run "make -C win32 -f #{options.makefile} WIDE=Y UTF8=Y DLL=Y all"
+  end
+
+  action :install do
+    bin_dir     = install_path('bin')
+    lib_dir     = install_path('lib')
+    include_dir = install_path('include')
+    source_dir  = work_path("win32")
+
+    # use Ruby's FileUtils functionality to manually copy the artifacts
+    fu = FileUtils
+
+    # ensure directories exists prior copying
+    fu.mkdir_p [bin_dir, lib_dir, include_dir]
+
+    # copy artifacts from source directory (win32)
+    fu.install File.join(source_dir, "pdcurses.dll"), bin_dir
+
+    %w(libpdcurses.dll.a libpdcurses.a).each do |lib|
+      fu.install File.join(source_dir, lib), lib_dir
+    end
+
+    %w(curses.h panel.h term.h).each do |header|
+      fu.install work_path(header), include_dir
+    end
+  end
+end
