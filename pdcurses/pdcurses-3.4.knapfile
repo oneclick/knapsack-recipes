@@ -2,17 +2,20 @@ recipe "pdcurses", "3.4" do
   sequence :configure, :compile, :install
   use :patch
 
-  fetch "http://downloads.sourceforge.net/#{name}/PDCurses-#{version}.tar.gz",
+  fetch "http://distfiles.openknapsack.org/#{name}/PDCurses-#{version}.tar.gz",
     :md5 => "4e04e4412d1b1392a7f9a489b95b331a"
 
   action :configure do
     # no-op to satisfy patch task
-    options.makefile = "mingwin32.mak"
+    options.makefile = "gccwin32.mak"
   end
 
   action :compile do
     # build static library first to avoid declspec(__dllexport) symbols
     run "make -C win32 -f #{options.makefile} WIDE=Y UTF8=Y all"
+
+    # remove compiled files to correct link issues
+    FileUtils.rm Dir.glob(work_path("win32/*.{o,exe"))
 
     # now build the DLL using existing compiled files
     run "make -C win32 -f #{options.makefile} WIDE=Y UTF8=Y DLL=Y all"
