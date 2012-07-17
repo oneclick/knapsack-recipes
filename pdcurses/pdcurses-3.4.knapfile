@@ -12,13 +12,13 @@ recipe "pdcurses", "3.4" do
 
   action :compile do
     # build static library first to avoid declspec(__dllexport) symbols
-    run "make -C win32 -f #{options.makefile} WIDE=Y UTF8=Y all"
+    run "make -C win32 -f #{options.makefile} all"
 
     # remove compiled files to correct link issues
     FileUtils.rm Dir.glob(work_path("win32/*.{o,exe"))
 
     # now build the DLL using existing compiled files
-    run "make -C win32 -f #{options.makefile} WIDE=Y UTF8=Y DLL=Y all"
+    run "make -C win32 -f #{options.makefile} DLL=Y all"
   end
 
   action :install do
