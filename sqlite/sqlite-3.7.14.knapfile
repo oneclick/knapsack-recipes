@@ -1,0 +1,12 @@
+recipe "sqlite", "3.7.14" do
+  use :autotools
+
+  fetch "http://distfiles.openknapsack.org/#{name}/#{name}-autoconf-3071400.tar.gz",
+    :md5 => "6464d429b1396a8db35864e791673b65"
+
+  before :configure do
+    cflags = "-O2 -DSQLITE_ENABLE_COLUMN_METADATA"
+    cflags << " -fPIC" if platform.x64? && !platform.mingw?
+    options.configure_args << "CFLAGS='#{cflags}'"
+  end
+end
