@@ -6,7 +6,6 @@ recipe "tcl", "8.5.12" do
     :md5 => "174b2b4c619ba8f96875d8a051917703"
 
   before :configure do
-    run "cd win && sh -c \"autoconf\""
     options.configure = "win/configure"
     options.configure_args << "--enable-threads"
   end
