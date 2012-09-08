@@ -2,7 +2,7 @@ recipe "tcl", "8.5.12" do
   use :autotools
   use :patch
 
-  fetch "http://downloads.sourceforge.net/#{name}/#{name}#{version}-src.tar.gz",
+  fetch "http://distfiles.openknapsack.org/#{name}/#{name}#{version}-src.tar.gz",
     :md5 => "174b2b4c619ba8f96875d8a051917703"
 
   before :configure do

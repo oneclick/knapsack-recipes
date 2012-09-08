@@ -3,7 +3,7 @@ recipe "tk", "8.5.12" do
 
   depends_on "tcl"
 
-  fetch "http://downloads.sourceforge.net/tcl/#{name}#{version}-src.tar.gz",
+  fetch "http://distfiles.openknapsack.org/#{name}/#{name}#{version}-src.tar.gz",
     :md5 => "a01640176845c1f654a412cfc9bab13b"
 
   before :configure do
