@@ -5,6 +5,10 @@ recipe "sqlite", "3.7.15.2" do
     :md5 => "bcb0ab0b5b30116b2531cfeef3c861b4"
 
   before :configure do
+    # enable both shared and static libraries
+    options.configure_args << "--enable-shared"
+    options.configure_args << "--enable-static"
+
     cflags = "-O2 -DSQLITE_ENABLE_COLUMN_METADATA"
     cflags << " -fPIC" if platform.x64? && !platform.mingw?
     options.configure_args << "CFLAGS='#{cflags}'"
