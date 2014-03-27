@@ -1,0 +1,11 @@
+recipe "libyaml", "0.1.6" do
+  use :autotools
+  use :patch
+
+  fetch "http://distfiles.openknapsack.org/#{name}/yaml-#{version}.tar.gz",
+    :md5 => "5fe00cda18ca5daeb43762b80c38e06e"
+
+  before :configure do
+    run "sh -c 'autoreconf -ivf'"
+  end
+end
