@@ -1,0 +1,32 @@
+recipe "openssl", "1.0.0m" do
+  use :autotools
+
+  fetch "http://distfiles.openknapsack.org/#{name}/#{name}-#{version}.tar.gz",
+    :md5 => "363362e5c55c95277c2ebf03877a83a1"
+
+  depends_on "zlib"
+
+  before :extract do
+    # ignore symlink errors from package
+    if platform.mingw?
+      options.ignore_extract_errors = true
+    end
+  end
+
+  action :configure do
+    cmd = ["perl", "Configure"]
+
+    if platform.mingw?
+      if platform.x64?
+        cmd << "mingw64"
+      else
+        cmd << "mingw"
+      end
+    end
+
+    cmd << "zlib-dynamic shared"
+    cmd << "--prefix=#{install_path}"
+
+    run cmd.join(" ")
+  end
+end
