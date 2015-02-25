@@ -2,7 +2,7 @@ recipe "pdcurses", "3.4" do
   sequence :configure, :compile, :install
   use :patch
 
-  fetch "http://distfiles.openknapsack.org/#{name}/PDCurses-#{version}.tar.gz",
+  fetch "http://dl.bintray.com/oneclick/OpenKnapsack/distfiles/PDCurses-#{version}.tar.gz",
     :md5 => "4e04e4412d1b1392a7f9a489b95b331a"
 
   action :configure do

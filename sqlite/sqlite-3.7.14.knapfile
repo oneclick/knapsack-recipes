@@ -1,7 +1,7 @@
 recipe "sqlite", "3.7.14" do
   use :autotools
 
-  fetch "http://distfiles.openknapsack.org/#{name}/#{name}-autoconf-3071400.tar.gz",
+  fetch "http://dl.bintray.com/oneclick/OpenKnapsack/distfiles/#{name}-autoconf-3071400.tar.gz",
     :md5 => "6464d429b1396a8db35864e791673b65"
 
   before :configure do

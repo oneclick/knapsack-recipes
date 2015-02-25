@@ -1,7 +1,7 @@
 recipe "libcurl", "7.24.0" do
   use :autotools
 
-  fetch "http://distfiles.openknapsack.org/#{name}/curl-#{version}.tar.bz2",
+  fetch "http://dl.bintray.com/oneclick/OpenKnapsack/distfiles/curl-#{version}.tar.bz2",
     :md5 => "f912221d75eb8d8fe08900eaf011b023"
 
   depends_on "c-ares"

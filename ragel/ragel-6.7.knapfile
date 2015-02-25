@@ -1,6 +1,6 @@
 recipe "ragel", "6.7" do
   use :autotools
 
-  fetch "http://distfiles.openknapsack.org/#{name}/#{name}-#{version}.tar.gz",
+  fetch "http://dl.bintray.com/oneclick/OpenKnapsack/distfiles/#{name}-#{version}.tar.gz",
     :md5 => "f4423e0d8a6538dd4e61498fcfad3cec"
 end

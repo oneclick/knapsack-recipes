@@ -1,7 +1,7 @@
 recipe "openssl", "1.0.0l" do
   use :autotools
 
-  fetch "http://distfiles.openknapsack.org/#{name}/#{name}-#{version}.tar.gz",
+  fetch "http://dl.bintray.com/oneclick/OpenKnapsack/distfiles/#{name}-#{version}.tar.gz",
     :md5 => "3847c1e3edb02b43188ff77d22f56877"
 
   depends_on "zlib"

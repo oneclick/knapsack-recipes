@@ -2,6 +2,6 @@ recipe "libffi", "3.0.12" do
   use :autotools
   use :patch
 
-  fetch "http://distfiles.openknapsack.org/#{name}/#{name}-#{version}.tar.gz",
+  fetch "http://dl.bintray.com/oneclick/OpenKnapsack/distfiles/#{name}-#{version}.tar.gz",
     :md5 => "da984c6756170d50f47925bb333cda71"
 end

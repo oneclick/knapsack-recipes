@@ -1,7 +1,7 @@
 recipe "openssl", "1.0.0o" do
   use :autotools
 
-  fetch "http://distfiles.openknapsack.org/#{name}/#{name}-#{version}.tar.gz",
+  fetch "http://dl.bintray.com/oneclick/OpenKnapsack/distfiles/#{name}-#{version}.tar.gz",
     :md5 => "473b311354b7b19d624a4f291580e82e",
     :sha256 => "3b6f5aa4faa5190f29647cce6899b146f5968503c4188980c437ca6f11d8c8fd"
 

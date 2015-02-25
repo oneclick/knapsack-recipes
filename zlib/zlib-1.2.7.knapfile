@@ -1,7 +1,7 @@
 recipe "zlib", "1.2.7" do
   use :autotools
 
-  fetch "http://distfiles.openknapsack.org/#{name}/#{name}-#{version}.tar.bz2",
+  fetch "http://dl.bintray.com/oneclick/OpenKnapsack/distfiles/#{name}-#{version}.tar.bz2",
         :md5 => "2ab442d169156f34c379c968f3f482dd"
 
   action :configure do

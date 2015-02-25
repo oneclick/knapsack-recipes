@@ -1,7 +1,7 @@
 recipe "libssh2", "1.4.2" do
   use :autotools
 
-  fetch "http://distfiles.openknapsack.org/#{name}/#{name}-#{version}.tar.gz",
+  fetch "http://dl.bintray.com/oneclick/OpenKnapsack/distfiles/#{name}-#{version}.tar.gz",
     :md5 => "42e2b3796ac07fc1dbafc7abcc002cd3"
 
   depends_on "openssl"

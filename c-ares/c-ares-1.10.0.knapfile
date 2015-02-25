@@ -1,6 +1,6 @@
 recipe "c-ares", "1.10.0" do
   use :autotools
 
-  fetch "http://distfiles.openknapsack.org/#{name}/#{name}-#{version}.tar.gz",
+  fetch "http://dl.bintray.com/oneclick/OpenKnapsack/distfiles/#{name}-#{version}.tar.gz",
     :md5 => "1196067641411a75d3cbebe074fd36d8"
 end

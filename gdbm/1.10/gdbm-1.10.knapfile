@@ -2,7 +2,7 @@ recipe "gdbm", "1.10" do
   use :autotools
   use :patch
 
-  fetch "http://distfiles.openknapsack.org/#{name}/gdbm-#{version}.tar.gz",
+  fetch "http://dl.bintray.com/oneclick/OpenKnapsack/distfiles/gdbm-#{version}.tar.gz",
     :md5 => "88770493c2559dc80b561293e39d3570"
 
   before :configure do
