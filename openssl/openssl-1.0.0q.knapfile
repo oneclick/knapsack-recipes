@@ -1,0 +1,32 @@
+recipe "openssl", "1.0.0q" do
+  use :autotools
+
+  fetch "https://www.openssl.org/source/openssl-1.0.0q.tar.gz",
+    :md5 => "8cafccab6f05e8048148e5c282ed5402"
+
+  depends_on "zlib"
+
+  before :extract do
+    # ignore symlink errors from package
+    if platform.mingw?
+      options.ignore_extract_errors = true
+    end
+  end
+
+  action :configure do
+    cmd = ["perl", "Configure"]
+
+    if platform.mingw?
+      if platform.x64?
+        cmd << "mingw64"
+      else
+        cmd << "mingw"
+      end
+    end
+
+    cmd << "zlib-dynamic shared"
+    cmd << "--prefix=#{install_path}"
+
+    run cmd.join(" ")
+  end
+end
