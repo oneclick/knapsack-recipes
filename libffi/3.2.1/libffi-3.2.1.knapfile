@@ -1,0 +1,7 @@
+recipe "libffi", "3.2.1" do
+  use :autotools
+  use :patch
+
+  fetch "ftp://sourceware.org/pub/libffi/#{name}-#{version}.tar.gz",
+    :md5 => "83b89587607e3eb65c70d361f13bab43"
+end

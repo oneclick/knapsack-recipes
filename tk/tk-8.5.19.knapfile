@@ -1,0 +1,15 @@
+recipe "tk", "8.5.19" do
+  use :autotools
+
+  depends_on "tcl"
+
+  fetch "http://prdownloads.sourceforge.net/tcl/#{name}#{version}-src.tar.gz",
+    :md5 => "e89df710447cce0fc0bde65667c12f85"
+
+  before :configure do
+    options.configure = "win/configure"
+    options.configure_args << "--enable-threads"
+    tcl_path = Knapsack.work_path("tcl", version, platform)
+    options.configure_args << "--with-tcl=#{tcl_path}"
+  end
+end
