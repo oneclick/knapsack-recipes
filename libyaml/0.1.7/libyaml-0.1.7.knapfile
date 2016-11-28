@@ -1,0 +1,10 @@
+recipe "libyaml", "0.1.7" do
+  use :autotools
+  use :patch
+
+  fetch "https://github.com/yaml/#{name}/archive/#{version}.tar.gz"
+
+  before :configure do
+    run "sh -c 'autoreconf -ivf'"
+  end
+end

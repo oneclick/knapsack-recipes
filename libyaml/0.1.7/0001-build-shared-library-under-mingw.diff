@@ -1,0 +1,41 @@
+diff --git a/configure.ac b/configure.ac
+index f0fa397..067bb58 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -58,6 +58,13 @@ AC_PROG_LIBTOOL
+ AC_CHECK_PROG(DOXYGEN, [doxygen], [true], [false])
+ AM_CONDITIONAL(DOXYGEN, [test "$DOXYGEN" = true])
+ 
++# Checks for host
++AS_CASE(["$host_os"],
++[mingw*], [
++	YAML_LT_LDFLAGS='-no-undefined';
++])
++AC_SUBST(YAML_LT_LDFLAGS)
++
+ # Checks for header files.
+ AC_HEADER_STDC
+ AC_CHECK_HEADERS([stdlib.h])
+diff --git a/include/yaml.h b/include/yaml.h
+index 5a04d36..70d839e 100644
+--- a/include/yaml.h
++++ b/include/yaml.h
+@@ -29,7 +29,7 @@ extern "C" {
+ #ifdef _WIN32
+ #   if defined(YAML_DECLARE_STATIC)
+ #       define  YAML_DECLARE(type)  type
+-#   elif defined(YAML_DECLARE_EXPORT)
++#   elif defined(YAML_DECLARE_EXPORT) || defined(DLL_EXPORT)
+ #       define  YAML_DECLARE(type)  __declspec(dllexport) type
+ #   else
+ #       define  YAML_DECLARE(type)  __declspec(dllimport) type
+diff --git a/src/Makefile.am b/src/Makefile.am
+index 724a1b2..be92df5 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -1,4 +1,4 @@
+ AM_CPPFLAGS = -I$(top_srcdir)/include
+ lib_LTLIBRARIES = libyaml.la
+ libyaml_la_SOURCES = yaml_private.h api.c reader.c scanner.c parser.c loader.c writer.c emitter.c dumper.c
+-libyaml_la_LDFLAGS = -release $(YAML_LT_RELEASE) -version-info $(YAML_LT_CURRENT):$(YAML_LT_REVISION):$(YAML_LT_AGE)
++libyaml_la_LDFLAGS = -release $(YAML_LT_RELEASE) -version-info $(YAML_LT_CURRENT):$(YAML_LT_REVISION):$(YAML_LT_AGE) $(YAML_LT_LDFLAGS)
